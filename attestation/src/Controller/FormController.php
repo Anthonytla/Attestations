@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Attestation;
 use App\Entity\Etudiant;
-use App\Entity\Form;
 use App\Form\FormEtudiantType;
 use App\Form\FormType;
 use App\Repository\FormRepository;
@@ -29,19 +28,16 @@ class FormController extends AbstractController
     /**
      * @Route("/form", name="form")
      */
-    public function index(FormRepository $formRepository): Response
+    public function index(): Response
     {
-        $form = $formRepository->findAll()[0];
-        dd($formRepository->findAll());
         return $this->render('form/index.html.twig', [
-            'id' => $form->getId(),
         ]);
     }
 
     /**
-     * @Route("/form/edit/{id}", name="form_edit")
+     * @Route("/form/edit", name="form_edit")
      */
-    public function edit(Request $request, Form $formu): Response
+    public function edit(Request $request): Response
     {
         
         $data = $request->query->all("FormType");
@@ -61,10 +57,10 @@ class FormController extends AbstractController
         
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $formu->setEtudiant($request->request->get("form")["Etudiant"]);
+            /*$formu->setEtudiant($request->request->get("form")["Etudiant"]);
             $this->entityManager->persist($formu);
-            $this->entityManager->flush();
-            $id = (int) $formu->setEtudiant($request->request->get("form")["Etudiant"])->getEtudiant();
+            $this->entityManager->flush();*/
+            $id = (int) $request->request->get("form")["Etudiant"];
 
             return $this->redirectToRoute('form_edit_message',  array('id' => $id));
         }

@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20210306060653 extends AbstractMigration
+final class Version20210306071823 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -23,7 +23,6 @@ final class Version20210306060653 extends AbstractMigration
         $this->addSql('CREATE TABLE attestation (id INT AUTO_INCREMENT NOT NULL, etudiant_id INT NOT NULL, convention_id INT DEFAULT NULL, message LONGTEXT NOT NULL, UNIQUE INDEX UNIQ_326EC63FDDEAB1A3 (etudiant_id), INDEX IDX_326EC63FA2ACEBCC (convention_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE convention (id INT AUTO_INCREMENT NOT NULL, nom VARCHAR(255) NOT NULL, nb_heur INT NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE etudiant (id INT AUTO_INCREMENT NOT NULL, convention_id INT NOT NULL, nom VARCHAR(255) NOT NULL, prenom VARCHAR(255) NOT NULL, mail VARCHAR(255) NOT NULL, INDEX IDX_717E22E3A2ACEBCC (convention_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
-        $this->addSql('CREATE TABLE form (id INT AUTO_INCREMENT NOT NULL, etudiant VARCHAR(255) NOT NULL, convention_name VARCHAR(255) NOT NULL, message LONGTEXT NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('ALTER TABLE attestation ADD CONSTRAINT FK_326EC63FDDEAB1A3 FOREIGN KEY (etudiant_id) REFERENCES etudiant (id)');
         $this->addSql('ALTER TABLE attestation ADD CONSTRAINT FK_326EC63FA2ACEBCC FOREIGN KEY (convention_id) REFERENCES convention (id)');
         $this->addSql('ALTER TABLE etudiant ADD CONSTRAINT FK_717E22E3A2ACEBCC FOREIGN KEY (convention_id) REFERENCES convention (id)');
@@ -38,6 +37,5 @@ final class Version20210306060653 extends AbstractMigration
         $this->addSql('DROP TABLE attestation');
         $this->addSql('DROP TABLE convention');
         $this->addSql('DROP TABLE etudiant');
-        $this->addSql('DROP TABLE form');
     }
 }

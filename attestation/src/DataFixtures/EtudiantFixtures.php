@@ -4,7 +4,6 @@ namespace App\DataFixtures;
 
 use App\Entity\Convention;
 use App\Entity\Etudiant;
-use App\Entity\Form;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -47,11 +46,11 @@ class EtudiantFixtures extends Fixture
         $convention->addEtudiant($etudiant2);
         $convention2->addEtudiant($etudiant3);
 
-        $form = new Form();
+        /*$form = new Form();
         $form->setMessage("");
         $form->setConventionName("");
         $form->setEtudiant("");
-        $manager->persist($form);
+        $manager->persist($form);*/
         $manager->persist($etudiant1);
         $manager->persist($etudiant2);
         $manager->persist($etudiant3);
