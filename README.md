@@ -15,6 +15,7 @@ Exécutez bin/console make:migration
 Exécutez bin/console doctrine:migrations:migrate
 
 Exécutez bin/console doctrine:fixtures:load (pour préremplir les tables Etudiant et Convention)
+
 Allez dans le dossier public
 
 exécutez php -S addr:port (exemple 127.0.0.1:8080)
