@@ -6,7 +6,7 @@ https://getcomposer.org/download/
 
 Allez dans le dossier "Attestations/attestation" puis exécutez composer upgrade ou php composer.phar upgrade (si composer.phar se trouve dans ce dossier)
 
-Ouvrir le fichier .env afin de choisir votre base de donnée. Décommentez la base de donnée que vous utilisez et mettez en commentaire d'autres.
+Ouvrir le fichier .env afin de choisir votre base de donnée. Décommentez la base de donnée que vous utilisez et mettez en commentaire des autres.
 
 Créer une base de donnée de nom "attestation"
 
