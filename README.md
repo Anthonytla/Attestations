@@ -30,6 +30,8 @@ Cliquez sur Update
 
 Modifiez le message comme bon vous semble et cliquez sur Update, l'attestation sera enregistrée dans la base de donnée.
 
+Vous pouvez agrandir la fenêtre afin de voir le message en entier
+
 
 
 
