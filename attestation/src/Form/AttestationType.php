@@ -14,6 +14,10 @@ class AttestationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+        ->add('Etudiant', EntityType::class, [
+            'class' => Etudiant::class,
+            'choice_label' => 'nom',
+        ])
             ->add('conventionName', TextType::class, ['disabled' => true])
             ->add('message', TextareaType::class)
 

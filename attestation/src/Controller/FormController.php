@@ -14,8 +14,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-
-
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 class FormController extends AbstractController
 {
@@ -41,72 +44,49 @@ class FormController extends AbstractController
     {
         
         $data = $request->query->all("FormType");
-        
-        if(isset($data["Etudiant"])){
-            
-            $em = $this->getDoctrine()->getManager();
-            $repoCategories = $em->getRepository(Etudiant::class);
-            $data["Etudiant"] = $repoCategories->findBy(['id' => $data["Etudiant"]]);
-        }
         $form = $this->createForm(FormType::class, $data);
-        $form->add('Etudiant', EntityType::class, [
-            'class' => Etudiant::class,
-            'choice_label' => 'nom',
-        ]);
+
         $form->handleRequest($request);
-        
+        $id = (int) $request->request->get("form")["Etudiant"];
+        $etudiants = $this->getDoctrine()->getManager()->getRepository(Etudiant::class)->findAll();
+    
+        $encoder = new JsonEncoder();
+        $defaultContext = [
+            AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object, $format, $context) {
+                return $object->getId();
+            },
+];
+        $normalizer = new ObjectNormalizer(null, null, null, null, null, null, $defaultContext);
+
+        $serializer = new Serializer([$normalizer], [$encoder]);
+        $data1 = $serializer->serialize($etudiants, 'json');
+                
         if ($form->isSubmitted() && $form->isValid()) {
 
-            /*$formu->setEtudiant($request->request->get("form")["Etudiant"]);
-            $this->entityManager->persist($formu);
-            $this->entityManager->flush();*/
             $id = (int) $request->request->get("form")["Etudiant"];
-
-            return $this->redirectToRoute('form_edit_message',  array('id' => $id));
+            $etudiant = $this->getDoctrine()->getManager()->getRepository(Etudiant::class)->findBy(['id' => $id]);
+            if (!$this->getDoctrine()->getManager()->getRepository(Attestation::class)->findBy(['etudiant' => $etudiant]))
+                $attestation = new Attestation();
+            else {
+                $attestation = $this->getDoctrine()->getManager()->getRepository(Attestation::class)->findBy(['etudiant' => $etudiant])[0];
+            }
+            $attestation->setEtudiant($etudiant[0]);
+            $attestation->setConvention($etudiant[0]->getConvention());
+            $attestation->setMessage($request->request->get("form")["message"]);
+            $etudiant[0]->setAttestation($attestation);
+            foreach ($etudiants as $etud) {
+                if ($etud === $etudiant) {
+                    $etud->setAttestation($attestation);
+                }
+            }
+            $data1 = $serializer->serialize($etudiants, 'json');
+            $this->entityManager->persist($attestation);
+            $this->entityManager->flush();
         }
         
         return $this->render('form/edit.html.twig', [
             'form' => $form->createView(),
+            'etudiants' => $data1,
         ]);
-    }
-
-    /**
-     * @Route("/form/edit_message/{id}", name="form_edit_message")
-     */
-
-    public function edit_message(Request $request, Etudiant $etudiant) {
-
-
-        $data = $request->query->all("AttestationType");
-        $data["conventionName"] = $etudiant->getConvention()->getNom();
-        if (!$etudiant->getAttestation()) 
-            $data["Message"] = "Bonjour".' '.$etudiant->getNom().' '.$etudiant->getPrenom().".\n\n\n"."Vous avez suivi ".$etudiant->getConvention()->getNbHeur()." de formation chez FormationPlus.\n\nPouvez-vous nous retourner ce mail avec la pièce jointe signée.\n\n\nCordialement.\n\nFormationPlus.";
-        else 
-            $data['Message'] = $etudiant->getAttestation()->getMessage();
-        $form = $this->createForm(FormEtudiantType::class, $data);
-        $form->handleRequest($request);
-        if (!$this->getDoctrine()->getManager()->getRepository(Attestation::class)->findBy(['etudiant' => $etudiant]))
-            $attestation = new Attestation();
-        else {
-            $attestation = $this->getDoctrine()->getManager()->getRepository(Attestation::class)->findBy(['etudiant' => $etudiant])[0];
-        }
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            
-            $attestation->setEtudiant($etudiant);
-            $attestation->setConvention($etudiant->getConvention());
-            $attestation->setMessage($request->request->get('form_etudiant')['Message']);
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($attestation);
-            $em->flush();
-
-            return $this->redirectToRoute('form');
-        }
-
-        return $this->render('form/edit.html.twig', [
-            'form' => $form->createView(),
-        ]);
-
-
     }
 }

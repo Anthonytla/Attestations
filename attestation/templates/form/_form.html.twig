@@ -1,4 +1,43 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
+{% dump(Etudiants) %}
+<div id="etudiant" data-etuds = "{{ Etudiants }}" >
+    {{ form_row(form.Etudiant) }}
+</div>
+
+<div id="convention">
+    {{ form_row(form.conventionName) }}
+</div>
+
+<div id="message">
+    {{ form_row(form.message) }}
+</div>
+
+<script
+  src="https://code.jquery.com/jquery-3.6.0.min.js"
+  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+  crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function() {
+        $('#etudiant').change(function() {
+            var etudiants = $(this).data('etuds');
+            var selectedValue = $('#form_Etudiant').val();
+            //console.log(etudiants[selectedValue - 1].nom);
+            var name = etudiants[selectedValue - 1].nom;
+            var heure = etudiants[selectedValue - 1].convention.nom;
+            $('#form_conventionName').val(heure);
+            if (etudiants[selectedValue - 1].attestation === null) {
+                console.log(selectedValue);
+                $('#form_message').val('Bonjour ' + name + ' ' + etudiants[selectedValue - 1].prenom + '\n\n\nVous avez suivi '+etudiants[selectedValue - 1].convention.nbHeur + ' de formation chez FormationPlus.\n\nPouvez-vous nous retourner ce mail avec la pièce jointe signée.\n\n\nCordialement,\n\nFormationPlus' );
+                console.log(etudiants[selectedValue - 1]);
+            }
+            else {
+                console.log(etudiants[selectedValue - 1].attestation.message);
+                $('#form_message').val(etudiants[selectedValue - 1].attestation.message);
+            }
+                
+        })
+});
+</script>
+
     <button class="btn">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}
