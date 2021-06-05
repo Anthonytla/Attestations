@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\AttestationRepository;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -26,6 +27,7 @@ class Attestation
 
     /**
      * @ORM\Column(type="text")
+     * @Groups("convention")
      */
     private $message;
 

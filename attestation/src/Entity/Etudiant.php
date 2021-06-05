@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\EtudiantRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=EtudiantRepository::class)
@@ -19,11 +20,13 @@ class Etudiant
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("etudiant")
      */
     private $nom;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("etudiant")
      */
     private $prenom;
 
@@ -34,6 +37,7 @@ class Etudiant
 
     /**
      * @ORM\OneToOne(targetEntity=Attestation::class, mappedBy="etudiant", cascade={"persist", "remove"})
+     * @Groups("etudiant")
      */
     private $attestation;
 
