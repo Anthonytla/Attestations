@@ -27,7 +27,7 @@ class Attestation
 
     /**
      * @ORM\Column(type="text")
-     * @Groups("convention")
+     * @Groups("etudiant")
      */
     private $message;
 
