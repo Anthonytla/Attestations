@@ -12,9 +12,12 @@ services:
             - 3306:3306
     attestation:
         build: .
+        restart: always
         ports:
             - 8000:8000
         depends_on:
+            - db
+        links: 
             - db
         command: bash -c "composer upgrade && php bin/console d:m:m && php bin/console d:f:l --no-interaction && cd public && php -S 0:8000"
         

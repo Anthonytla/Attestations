@@ -19,38 +19,35 @@
     $(document).ready(function() {
         $('#etudiant').change(function() {
             var selectedValue = $('#form_Etudiant').val();
+            var data1;
             $.ajax({  
                url:        '/api/etudiant/'+selectedValue,  
                type:       'GET',   
                dataType:   'json',
-               async:      true,  
+               async:      false,  
                
                success: function(data, status) {  
-                    var lastName = data.nom;
-                    var firstName = data.prenom;
-                    $.ajax({
-                        url: '/api/convention/' + selectedValue,
-                        type: 'GET',
-                        dataType: 'json',
-                        async: true,
-                        success: function(data2, status) {
-                        
-                            $('#form_conventionName').val(data2.nom);
-                            console.log(data);
-                            if (data.attestation === null)
-                                $('#form_message').val('Bonjour ' + lastName + ' ' + firstName + '\n\n\nVous avez suivi '+ data2.nbHeur+' de formation chez FormationPlus.\n\nPouvez-vous nous retourner ce mail avec la pièce jointe signée.\n\n\nCordialement,\n\nFormationPlus' );
-                            else {
-                                console.log(data.attestation.message);
-                                $('#form_message').val(data.attestation.message);
-                            }
-                        }
-                    })
+                    data1 = data;
+               }
+            })
+            
+            $.ajax({
+                url: '/api/convention/' + selectedValue,
+                type: 'GET',
+                dataType: 'json',
+                async: false,
+                success: function(data2, status) {
+                
+                    $('#form_conventionName').val(data2.nom);
                     
-               },  
-               error : function(xhr, textStatus, errorThrown) {  
-                  alert('Ajax request failed.');  
-               }  
-            });  
+                    if (data1.attestation === null)
+                        $('#form_message').val('Bonjour ' + data1.nom + ' ' + data1.prenom + '\n\n\nVous avez suivi '+ data2.nbHeur+' de formation chez FormationPlus.\n\nPouvez-vous nous retourner ce mail avec la pièce jointe signée.\n\n\nCordialement,\n\nFormationPlus' );
+                    else {
+                        console.log(data1.attestation.message);
+                        $('#form_message').val(data1.attestation.message);
+                    }
+                }
+            })
          });   
 });
 </script>
