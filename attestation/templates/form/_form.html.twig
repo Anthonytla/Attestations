@@ -19,7 +19,7 @@
     $(document).ready(function() {
         $('#etudiant').change(function() {
             var selectedValue = $('#form_Etudiant').val();
-            var data1;
+            var etudiant;
             $.ajax({  
                url:        '/api/etudiant/'+selectedValue,  
                type:       'GET',   
@@ -27,7 +27,7 @@
                async:      false,  
                
                success: function(data, status) {  
-                    data1 = data;
+                    etudiant = data;
                }
             })
             
@@ -36,15 +36,15 @@
                 type: 'GET',
                 dataType: 'json',
                 async: false,
-                success: function(data2, status) {
+                success: function(convention, status) {
                 
-                    $('#form_conventionName').val(data2.nom);
+                    $('#form_conventionName').val(convention.nom);
                     
-                    if (data1.attestation === null)
-                        $('#form_message').val('Bonjour ' + data1.nom + ' ' + data1.prenom + '\n\n\nVous avez suivi '+ data2.nbHeur+' de formation chez FormationPlus.\n\nPouvez-vous nous retourner ce mail avec la pièce jointe signée.\n\n\nCordialement,\n\nFormationPlus' );
+                    if (etudiant.attestation === null)
+                        $('#form_message').val('Bonjour ' + etudiant.nom + ' ' + etudiant.prenom + '\n\n\nVous avez suivi '+ convention.nbHeur+' de formation chez FormationPlus.\n\nPouvez-vous nous retourner ce mail avec la pièce jointe signée.\n\n\nCordialement,\n\nFormationPlus' );
                     else {
-                        console.log(data1.attestation.message);
-                        $('#form_message').val(data1.attestation.message);
+                        console.log(etudiant.attestation.message);
+                        $('#form_message').val(etudiant.attestation.message);
                     }
                 }
             })
